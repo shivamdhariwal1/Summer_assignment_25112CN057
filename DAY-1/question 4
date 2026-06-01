@@ -1,0 +1,24 @@
+#include<stdio.h>
+int main(){
+    int num, count = 0;
+
+    //take input ask the user to enter the number
+    printf("enter the number");
+    scanf("%d", &num);
+
+    // if number is 0 then special case
+     if (num == 0) {
+        count = 1;
+    } else {
+        // Count digits by repeatedly dividing by 10
+        while (num != 0) {
+            num = num / 10;
+            count++;
+        }
+    }
+
+    // Display the number of digits
+    printf("Number of digits = %d\n", count);
+
+    return 0; // Indicate successful execution
+}
