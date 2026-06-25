@@ -1,0 +1,27 @@
+#include <stdio.h>
+int main() {
+    int age;
+    const int VOTING_AGE = 18;
+    printf("======================================\n");
+    printf("     VOTING ELIGIBILITY SYSTEM       \n");
+    printf("======================================\n\n");
+    printf("Please enter your age: ");
+    if (scanf("%d", &age) != 1) {
+        printf("\n❌ Error: Invalid input! Please enter a valid number for age.\n");
+        return 1; 
+    }
+    if (age < 0 || age > 120) {
+        printf("\n❌ Error: Please enter a realistic age between 0 and 120.\n");
+    } 
+    else if (age >= VOTING_AGE) {
+        printf("\n✅ Congratulations! You are %d years old.\n", age);
+        printf("You are ELIGIBLE to cast your vote.\n");
+    } 
+    else {
+        printf("\n⛔ Sorry, you are only %d years old.\n", age);
+        printf("You are NOT eligible to vote yet.\n");
+        printf("You need to wait %d more year(s).\n", VOTING_AGE - age);
+    }
+    printf("\n======================================\n");
+    return 0;
+}
