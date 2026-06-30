@@ -1,0 +1,96 @@
+#include<stdio.h>
+#include<string.h>
+#define MAX_ITEMS 50
+#define NAME_LEN 40
+struct Item{
+int id;
+char name[NAME_LEN];
+int quantity;
+float price;
+};
+void addItem(struct Item inventory[],int *count);
+void displayInventory(const struct Item inventory[],int count);
+void searchItem(const struct Item inventory[],int count);
+void generateBill(struct Item inventory[],int count);
+int main(){
+struct Item inventory[MAX_ITEMS];
+int itemCount=0;
+int choice;
+inventory[0]=(struct Item){101,"Wireless Mouse",15,25.50};
+inventory[1]=(struct Item){102,"Mechanical Keyboard",8,75.00};
+inventory[2]=(struct Item){103,"Gaming Headset",12,45.99};
+itemCount=3;
+while(1){
+printf("\n1.Add Item\n2.View Stock\n3.Search Item\n4.Checkout\n5.Exit\nChoice: ");
+scanf("%d",&choice);
+getchar();
+switch(choice){
+case 1:addItem(inventory,&itemCount);break;
+case 2:displayInventory(inventory,itemCount);break;
+case 3:searchItem(inventory,itemCount);break;
+case 4:generateBill(inventory,itemCount);break;
+case 5:return 0;
+default:printf("Invalid!\n");
+}
+}
+return 0;
+}
+void addItem(struct Item inventory[],int *count){
+if(*count>=MAX_ITEMS)return;
+printf("ID: ");
+scanf("%d",&inventory[*count].id);
+getchar();
+printf("Name: ");
+fgets(inventory[*count].name,NAME_LEN,stdin);
+inventory[*count].name[strcspn(inventory[*count].name,"\n")]='\0';
+printf("Qty: ");
+scanf("%d",&inventory[*count].quantity);
+printf("Price: ");
+scanf("%f",&inventory[*count].price);
+(*count)++;
+}
+void displayInventory(const struct Item inventory[],int count){
+if(count==0)return;
+for(int i=0;i<count;i++){
+printf("%d %s %d %.2f\n",inventory[i].id,inventory[i].name,inventory[i].quantity,inventory[i].price);
+}
+}
+void searchItem(const struct Item inventory[],int count){
+char query[NAME_LEN];
+printf("Query: ");
+fgets(query,NAME_LEN,stdin);
+query[strcspn(query,"\n")]='\0';
+for(int i=0;i<count;i++){
+if(strstr(inventory[i].name,query)!=NULL){
+printf("%d %s %d %.2f\n",inventory[i].id,inventory[i].name,inventory[i].quantity,inventory[i].price);
+}
+}
+}
+void generateBill(struct Item inventory[],int count){
+int targetId,orderQty,foundIdx;
+float totalBill=0.0;
+char choice;
+do{
+foundIdx=-1;
+printf("ID: ");
+scanf("%d",&targetId);
+for(int i=0;i<count;i++){
+if(inventory[i].id==targetId){
+foundIdx=i;
+break;
+}
+}
+if(foundIdx!=-1){
+printf("Qty: ");
+scanf("%d",&orderQty);
+if(orderQty<=inventory[foundIdx].quantity){
+totalBill+=(orderQty*inventory[foundIdx].price);
+inventory[foundIdx].quantity-=orderQty;
+}
+}
+printf("More? (y/n): ");
+getchar();
+scanf("%c",&choice);
+}while(choice=='y'||choice=='Y');
+printf("Total: %.2f\n",totalBill);
+}

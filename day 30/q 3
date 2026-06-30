@@ -1,0 +1,123 @@
+#include <stdio.h>
+#include <string.h>
+#define MAX_EMPLOYEES 100
+#define NAME_LENGTH 50
+#define DEPT_LENGTH 30
+struct Employee {
+    int id;
+    char name[NAME_LENGTH];
+    char department[DEPT_LENGTH];
+    float salary;
+};
+void addEmployee(struct Employee empList[], int *count);
+void displayEmployees(const struct Employee empList[], int count);
+void searchEmployee(const struct Employee empList[], int count);
+void calculatePayroll(const struct Employee empList[], int count);
+int main() {
+    struct Employee companyDB[MAX_EMPLOYEES];
+    int employeeCount = 0;
+    int choice;
+    while (1) {
+        printf("\n====== EMPLOYEE MANAGEMENT SYSTEM ======\n");
+        printf("1. Add New Employee Record\n");
+        printf("2. Display All Employee Records\n");
+        printf("3. Search Employee by ID\n");
+        printf("4. Total Company Payroll (Salary)\n");
+        printf("5. Exit\n");
+        printf("----------------------------------------\n");
+        printf("Enter your choice (1-5): ");
+        scanf("%d", &choice);
+        getchar(); 
+        switch (choice) {
+            case 1:
+                addEmployee(companyDB, &employeeCount);
+                break;
+            case 2:
+                displayEmployees(companyDB, employeeCount);
+                break;
+            case 3:
+                searchEmployee(companyDB, employeeCount);
+                break;
+            case 4:
+                calculatePayroll(companyDB, employeeCount);
+                break;
+            case 5:
+                printf("Exiting system. Have a great day!\n");
+                return 0;
+            default:
+                printf("Invalid choice! Please select an option between 1 and 5.\n");
+        }
+    }
+    return 0;
+}
+void addEmployee(struct Employee empList[], int *count) {
+    if (*count >= MAX_EMPLOYEES) {
+        printf("\nDatabase limit reached! Cannot add more employees.\n");
+        return;
+    }
+    printf("\nEnter Employee ID (Integer): ");
+    scanf("%d", &empList[*count].id);
+    getchar(); 
+    printf("Enter Full Name: ");
+    fgets(empList[*count].name, NAME_LENGTH, stdin);
+    empList[*count].name[strcspn(empList[*count].name, "\n")] = '\0'; 
+    printf("Enter Department: ");
+    fgets(empList[*count].department, DEPT_LENGTH, stdin);
+    empList[*count].department[strcspn(empList[*count].department, "\n")] = '\0'; 
+    printf("Enter Monthly Salary: ");
+    scanf("%f", &empList[*count].salary);
+    (*count)++;
+    printf("\nEmployee record created successfully!\n");
+}
+void displayEmployees(const struct Employee empList[], int count) {
+    if (count == 0) {
+        printf("\nNo records found in the system.\n");
+        return;
+    }
+    printf("\n%-10s %-30s %-20s %-12s\n", "ID", "Name", "Department", "Salary");
+    printf("--------------------------------------------------------------------------\n");
+    for (int i = 0; i < count; i++) {
+        printf("%-10d %-30s %-20s $%-11.2f\n", 
+               empList[i].id, 
+               empList[i].name, 
+               empList[i].department, 
+               empList[i].salary);
+    }
+}
+void searchEmployee(const struct Employee empList[], int count) {
+    if (count == 0) {
+        printf("\nNo employee data available to search.\n");
+        return;
+    }
+    int searchId, found = 0;
+    printf("\nEnter Employee ID to search: ");
+    scanf("%d", &searchId);
+    for (int i = 0; i < count; i++) {
+        if (empList[i].id == searchId) {
+            printf("\nEmployee Record Found:\n");
+            printf("ID:         %d\n", empList[i].id);
+            printf("Name:       %s\n", empList[i].name);
+            printf("Department: %s\n", empList[i].department);
+            printf("Salary:     $%.2f\n", empList[i].salary);
+            found = 1;
+            break;
+        }
+    }
+    if (!found) {
+        printf("\nEmployee with ID %d not found.\n", searchId);
+    }
+}
+void calculatePayroll(const struct Employee empList[], int count) {
+    if (count == 0) {
+        printf("\nNo records available to calculate total payroll.\n");
+        return;
+    }
+    float totalPayroll = 0;
+    for (int i = 0; i < count; i++) {
+        totalPayroll += empList[i].salary;
+    }
+    printf("\n====================================");
+    printf("\nTotal Active Employees: %d", count);
+    printf("\nTotal Company Payroll:  $%.2f", totalPayroll);
+    printf("\n====================================\n");
+}
